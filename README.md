@@ -1,100 +1,110 @@
 # HeartCare AI — Heart Disease Prediction
 
-A premium, responsive web application for heart disease prediction using a Support Vector Machine (SVC) model trained on the Cleveland Heart Disease dataset. Built with React + Vite, Tailwind CSS, and FastAPI.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://heart-disease-prediction-seven-hazel.vercel.app/)
+[![API Docs](https://img.shields.io/badge/API%20Docs-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://heart-disease-backend-v336.onrender.com/docs)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+
+A premium, responsive full-stack web application for heart disease prediction using a Support Vector Machine (SVC) model trained on the Cleveland Heart Disease dataset. Built with **React + Vite**, **Tailwind CSS**, and **FastAPI**.
+
+---
+
+## 🌐 Live Deployment
+
+| Service | Platform | Live URL |
+| :--- | :--- | :--- |
+| **Frontend Web App** | Vercel | [https://heart-disease-prediction-seven-hazel.vercel.app](https://heart-disease-prediction-seven-hazel.vercel.app/) |
+| **Backend REST API** | Render | [https://heart-disease-backend-v336.onrender.com](https://heart-disease-backend-v336.onrender.com) |
+| **Interactive API Docs** | Swagger UI | [https://heart-disease-backend-v336.onrender.com/docs](https://heart-disease-backend-v336.onrender.com/docs) |
+
+> **Note on Render Free Tier**: If the server has been idle for more than 15 minutes, Render spins down the backend. The very first prediction request may take ~30–45 seconds while the service spins up. Subsequent requests will be instant.
+
+---
 
 ## Project Structure
 
-```
+```text
 Project 5/
 ├── backend/
-│   ├── app.py                 # FastAPI server
+│   ├── app.py                 # FastAPI server & prediction endpoints
 │   ├── requirements.txt       # Python dependencies
 │   └── models/
 │       ├── heart_disease_model.pkl   # Trained SVC model
 │       └── scaler.pkl               # Fitted StandardScaler
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx              # Main app with view routing
-│   │   ├── App.css              # Tailwind directives
+│   │   ├── App.jsx              # Main application with view routing
+│   │   ├── App.css              # Tailwind custom styles & animations
 │   │   ├── main.jsx             # React entry point
-│   │   ├── vite-env.d.ts        # Vite env types
+│   │   ├── vite-env.d.ts        # Vite environment types
 │   │   └── components/
-│   │       ├── Landing.jsx      # Landing page
-│   │       ├── PredictionForm.jsx  # Patient input form
-│   │       ├── Result.jsx       # Prediction result display
-│   │       └── About.jsx        # Model info & disclaimer
+│   │       ├── Landing.jsx      # Hero landing page
+│   │       ├── PredictionForm.jsx  # Interactive patient input form
+│   │       ├── Result.jsx       # Prediction output & risk level display
+│   │       └── About.jsx        # Model architecture & medical disclaimer
 │   ├── index.html
 │   ├── package.json
 │   ├── vite.config.js
 │   ├── tailwind.config.js
-│   ├── postcss.config.js
+│   ├── postcss.config.cjs
 │   └── .env.example             # Environment variable template
 ├── data/
 │   └── heart.csv                # Cleveland Heart Disease dataset
 ├── notebooks/
-│   ├── Heart_diesease.ipynb     # Initial analysis
-│   └── Heart_Disease_corrected.ipynb  # Final model training & evaluation
+│   └── Heart_Disease_corrected.ipynb  # Model training, analysis & evaluation
+├── .gitignore                   # Git exclusion rules
 └── README.md
 ```
+
+---
 
 ## Prerequisites
 
 - **Python** 3.8+
 - **Node.js** 18+ with npm
-- **Git** (optional, for cloning)
+- **Git**
 
-## Installation
+---
 
-### Backend (FastAPI)
+## Local Development Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/<YOUR-USERNAME>/heart-disease-prediction.git
+cd heart-disease-prediction
+```
+
+### 2. Backend Setup (FastAPI)
 
 ```bash
 cd backend
 pip install -r requirements.txt
-```
-
-### Frontend (React + Vite + Tailwind)
-
-```bash
-cd frontend
-npm install
-```
-
-## Running the Application
-
-### 1. Start the Backend Server
-
-```bash
-cd backend
 python -m uvicorn app:app --reload --port 8000
 ```
 
-The API will be available at `http://localhost:8000`.
+The API will be available locally at `http://localhost:8000` and docs at `http://localhost:8000/docs`.
 
-### 2. Start the Frontend Dev Server
+### 3. Frontend Setup (React + Vite)
 
 In a separate terminal:
 
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
 
 Open `http://localhost:5173` in your browser.
 
-### Using a Custom Backend URL
+---
 
-By default, the frontend connects to `http://localhost:8000`. To use a different URL:
+## API Documentation & Usage
 
-```bash
-cp .env.example .env
-# Edit .env and set your VITE_API_URL
-```
+### Endpoint: `POST /predict`
 
-## API Usage
-
-### POST `/predict`
-
-Send a JSON request to `http://localhost:8000/predict` with patient data:
+Send a JSON payload with patient clinical metrics:
 
 ```json
 {
@@ -121,15 +131,18 @@ Send a JSON request to `http://localhost:8000/predict` with patient data:
 }
 ```
 
-- `heart_disease_prediction`: `0` (no heart disease) or `1` (heart disease detected)
-- `confidence_score`: `null` (SVC model does not support predict_proba)
+- `heart_disease_prediction`: `0` (Heart Disease Not Detected) or `1` (Heart Disease Detected)
+- `confidence_score`: `null` (SVC model uses hard-margin decision boundary)
 
-## Testing Both Prediction Classes
+---
 
-### Test Class 0 (No Heart Disease)
+## Testing Predictions via cURL
 
+### Test Class 0 (Low Risk / No Heart Disease)
+
+**Against Production (Render):**
 ```bash
-curl -X POST http://localhost:8000/predict \
+curl -X POST https://heart-disease-backend-v336.onrender.com/predict \
   -H "Content-Type: application/json" \
   -d '{
     "Age": 40,
@@ -146,12 +159,11 @@ curl -X POST http://localhost:8000/predict \
   }'
 ```
 
-### Test Class 1 (Heart Disease)
+### Test Class 1 (Elevated Risk / Heart Disease Detected)
 
-Use values associated with higher risk:
-
+**Against Production (Render):**
 ```bash
-curl -X POST http://localhost:8000/predict \
+curl -X POST https://heart-disease-backend-v336.onrender.com/predict \
   -H "Content-Type: application/json" \
   -d '{
     "Age": 60,
@@ -168,36 +180,40 @@ curl -X POST http://localhost:8000/predict \
   }'
 ```
 
+---
+
 ## Model Details
 
 - **Algorithm**: Support Vector Machine (SVC)
 - **Dataset**: Cleveland Heart Disease Dataset
-- **Classes**: Binary (0 = no disease, 1 = disease)
-- **Features**: 11 input fields, expanded to 15 after one-hot encoding
-- **Scaler**: StandardScaler (fitted on training data)
+- **Classification Task**: Binary classification (0 = No Disease, 1 = Disease Detected)
+- **Features**: 11 input fields, transformed to 15 features after one-hot encoding
+- **Preprocessing**: `StandardScaler` fitted on training data
 - **Test Accuracy**: 85.87%
 
-## Feature Encoding
+### Feature Encoding Reference
 
-The model uses one-hot encoding for categorical variables. The backend (`app.py`) handles this automatically:
+| Field | Description | Values | One-Hot Encoding |
+| :--- | :--- | :--- | :--- |
+| `Sex` | Biological sex | `M` / `F` | `Sex_M` (1 if M, else 0) |
+| `ChestPainType` | Chest pain classification | `TA`, `ATA`, `NAP`, `ASY` | `ChestPainType_ATA`, `ChestPainType_NAP`, `ChestPainType_TA` (`ASY` = baseline) |
+| `RestingECG` | Resting ECG result | `Normal`, `ST`, `LVH` | `RestingECG_Normal`, `RestingECG_ST` (`LVH` = baseline) |
+| `ExerciseAngina` | Exercise-induced angina | `Y` / `N` | `ExerciseAngina_Y` (1 if Y, else 0) |
+| `ST_Slope` | Peak exercise ST segment slope | `Up`, `Flat`, `Down` | `ST_Slope_Flat`, `ST_Slope_Up` (`Down` = baseline) |
 
-| Field | Values | Encoding |
-|-------|--------|----------|
-| Sex | M / F | `Sex_M` (1 if M, else 0) |
-| ChestPainType | TA / ATA / NAP / ASY | One-hot: `ChestPainType_ATA`, `ChestPainType_NAP`, `ChestPainType_TA` (ASY = baseline) |
-| RestingECG | Normal / ST / LVH | One-hot: `RestingECG_Normal`, `RestingECG_ST` (LVH = baseline) |
-| ExerciseAngina | Y / N | `ExerciseAngina_Y` (1 if Y, else 0) |
-| ST_Slope | Up / Flat / Down | One-hot: `ST_Slope_Flat`, `ST_Slope_Up` (Down = baseline) |
+---
 
-## Development Scripts
+## Frontend Scripts
 
 | Command | Description |
-|---------|-------------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Build production bundle |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint |
+| :--- | :--- |
+| `npm run dev` | Start Vite local development server |
+| `npm run build` | Compile optimized production bundle to `dist/` |
+| `npm run preview` | Locally preview production build |
+| `npm run lint` | Run ESLint syntax checks |
+
+---
 
 ## Disclaimer
 
-This application is an educational machine learning project. Its predictions are not a medical diagnosis and must not be used to rule out or confirm heart disease. Consult a qualified healthcare professional for medical concerns.
+This application is an educational machine learning project. Its predictions are not a medical diagnosis and must not be used to rule out or confirm heart disease. Always consult a qualified healthcare professional for medical concerns and treatment advice.

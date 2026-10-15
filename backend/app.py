@@ -24,6 +24,15 @@ MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
 model = joblib.load(os.path.join(MODEL_DIR, "heart_disease_model.pkl"))
 scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
 
+@app.get("/")
+def root():
+    return {
+        "status": "online",
+        "service": "HeartCare AI Prediction API",
+        "docs_url": "/docs",
+        "health": "ok"
+    }
+
 # Define the expected incoming JSON body matching the original features
 class PatientData(BaseModel):
     Age: int = Field(ge=1, le=120, description="Must be between 1 and 120")
